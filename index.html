@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Display Ad Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    
+    <script>
+
+        // Toggle Create Type //
+        function toggleVisibility() {
+          const fileInput = document.getElementById("json-file");
+          const inputFields = document.getElementById("input-fields");
+          const required = document.querySelector(".form-control");
+
+          if (fileInput.style.display === "none") {
+              fileInput.style.display = "block";
+              inputFields.style.display = "none";
+              required.removeAttribute('required');
+          } else {
+              fileInput.style.display = "none";
+              inputFields.style.display = "block";
+              required.setAttribute('required', '');
+          }
+        }
+
+        // Toggle Required Attribute //
+        function setRequired(val){
+          input = document.getElementById("show").getElementsByTagName('input');
+          for(i = 0; i < input.length; i++){
+              input[i].required = val;
+          }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          const template = document.getElementById("template");
+          const templatename = document.getElementById("templatename");
+          var select = document.getElementById("imagenumber");
+          const colortheme = document.getElementById("colortheme");
+          const btncolor = document.getElementById("btncolor");
+          const bgcolor1 = document.getElementById("bgcolor1");
+          const bgcolor2 = document.getElementById("bgcolor2");
+
+          // Assign Template Name Based on Template Selection //
+          template.addEventListener("change", function () {
+            switch (this.value) {
+              case "n1MJGd520mWWb7LaPV":
+                templatename.value = "300x50";
+                break;
+              case "p8YXW3b1xkW3DVgkw2":
+                templatename.value = "320x50";
+                break;
+              case "gdeyVMZOGPNLZ4QmW6":
+                templatename.value = "300x50";
+                break;
+              case "2j8dyQZWnW63b7A9Lm":
+                templatename.value = "300x600";
+                break;
+              case "n1MJGd520NYlb7LaPV":
+                templatename.value = "300x600";
+                break;
+              case "lzw71BD60mKlZ0eYkn":
+                templatename.value = "728x90";
+                break;
+              case "4KnlWBbK1dAd5OQGgm":
+                templatename.value = "728x90";
+                break;
+              case "yKBqAzZ9xQ0nbvMx36":
+                templatename.value = "300x250";
+                break;
+              case "2j8dyQZWndlKb7A9Lm":
+                templatename.value = "300x250";
+                break;
+              case "V4WN6JDx0oGBD3Gqjk":
+                templatename.value = "160x600";
+                break;
+              case "Rqg32K5QxdrYZ8V07Y":
+                templatename.value = "160x600";
+                break;
+              default:
+                templatename.value = "000x000";
+            }
+          });
+          
+          // Assign Color Profile Based on Selection //
+          colortheme.addEventListener("change", function () {
+            if (this.value === "teal") {
+              btncolor.value = "#32C3AF";
+              bgcolor1.value = "#32C3AF";
+              bgcolor2.value = "#32C3AF";
+            } else {
+              btncolor.value = "#A31F34";
+              bgcolor1.value = "#EF7521";
+              bgcolor2.value = "#A31F34";
+            }
+          });
+
+          // Add Number Options //
+          for (var i = 1; i <= 105; i++) {
+            var option = document.createElement("option");
+            option.value = i;
+            option.text = i;
+            select.appendChild(option);
+          }
+
+        });
+
+    </script>
+
+  </head>
+  <body>
+
+    <div class="container py-5">
+      <div class="row">
+        <div class="col-12 col-md-8 offset-md-2">
+          <form id="myForm" netlify-honeypot="bot-field" data-netlify="true">
+            <h2 class="pb-3">Display Ad Generator</h2>
+            <input type="radio" name="toggle" id="upload-multiple" onclick="toggleVisibility()" checked> Multiple Images<br>
+            <input type="radio" name="toggle" onclick="toggleVisibility()"> Single Image
+            <br><br>
+            <div id="json-file">
+              
+              <h6 class="mb-2">Upload a CSV file</h6>
+              <input type="file" class="form-control-file mb-3" id="json-file" name="json-file" style="display: block;">
+
+              <input type="radio" name="template-option" value="default" checked>
+              <label for="default">Default</label>
+
+              <input type="radio" name="template-option" value="long-button">
+              <label for="long-button">Long button</label>
+            </div>
+
+            <div id="input-fields" style="display: none;">
+              <div class="row g-3 mb-4">
+                <div class="col">
+                  <label for="filename">Filename</label>
+                  <input type="text" class="form-control" id="filename" name="filename">
+                </div>
+              </div>
+              <div class="row g-3 mb-4">
+                <div class="col-4">
+                  <label for="headline">Headline</label>
+                  <input type="text" class="form-control" id="headline" name="headline">
+                </div>
+                <div class="col-4">
+                  <label for="subhead">Subheader</label>
+                  <input type="text" class="form-control" id="subhead" name="subhead">
+                </div>
+                <div class="col-2">
+                  <label for="imagenumber">Button Text</label>
+                  <input type="text" class="form-control" id="btntext" name="btntext">
+                </div>
+                <div class="col-2">
+                  <label for="imagenumber">Image</label>
+                  <select class="form-select" name="imagenumber" id="imagenumber">
+                  </select>
+                </div>
+              </div>
+              <div class="row g-3 mb-4">
+                <div class="col">
+                  <label for="dropdown">Template:</label>
+                  <select class="form-select" name="template" id="template">
+                      <option value="">Select an size</option>
+                      <option value="4KnlWBbK1dAd5OQGgm">728x90 / Long Button</option>
+                      <option value="n1MJGd520NYlb7LaPV">300X600 / Long Button</option>
+                      <option value="2j8dyQZWndlKb7A9Lm">300X250 / Long Button</option>
+                      <option value="gdeyVMZOGPNLZ4QmW6">300x50 / Long Button</option>
+                      <option value="Rqg32K5QxdrYZ8V07Y">160x600 / Long Button</option>
+                      <option value="n1MJGd520mWWb7LaPV">300x50</option>
+                      <option value="p8YXW3b1xkW3DVgkw2">320x50</option>
+                      <option value="2j8dyQZWnW63b7A9Lm">300x600</option>
+                      <option value="lzw71BD60mKlZ0eYkn">728x90</option>
+                      <option value="yKBqAzZ9xQ0nbvMx36">300x250</option>
+                      <option value="V4WN6JDx0oGBD3Gqjk">160x600</option>
+                  </select>
+                  <input type="hidden" id="templatename" name="templatename" value="">
+                </div>
+                <div class="col">
+                  <label for="dropdown">Color Theme:</label>
+                  <select class="form-select" name="colortheme" id="colortheme">
+                      <option value="">Select a color</option>
+                      <option value="teal">Teal</option>
+                      <option value="orange">Orange</option>
+                  </select>
+                  <input type="hidden" id="btncolor" name="btncolor" value="">
+                  <input type="hidden" id="bgcolor1" name="bgcolor1" value="">
+                  <input type="hidden" id="bgcolor2" name="bgcolor2" value="">
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary mt-4" type="submit">Generate Images</button>
+          </form>
+
+          <div id="processing" class="alert alert-primary mt-4" role="alert" style="display: none"></div>
+          <div id="complete" class="alert alert-success mt-4" role="alert" style="display: none"></div>
+          <div class="col-12 mt-3" id="outputtable" style="display: none">
+            <table class="table table-striped" id="result">
+              <thead>
+                <tr>
+                  <th scope="col">Filename</th>
+                  <th scope="col">Template</th>
+                  <th scope="col">Image Link</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+            <button id="downloadwrapper"  class="btn btn-primary" style="display: none"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <script>
+      const dimensions = ['300x50', '320x50', '300x600', '728x90', '300x250', '160x600'];
+      // const templateNames = ['V4WN6JDx0oGBD3Gqjk', 'lzw71BD60mKlZ0eYkn', '2j8dyQZWnW63b7A9Lm'];
+      const defaultTemplateNames = ['n1MJGd520mWWb7LaPV', 'p8YXW3b1xkW3DVgkw2', '2j8dyQZWnW63b7A9Lm', 'lzw71BD60mKlZ0eYkn', 'yKBqAzZ9xQ0nbvMx36', 'V4WN6JDx0oGBD3Gqjk'];
+      const longButtonTemplateNames = ['gdeyVMZOGPNLZ4QmW6', 'p8YXW3b1xkW3DVgkw2', 'n1MJGd520NYlb7LaPV', '4KnlWBbK1dAd5OQGgm', '2j8dyQZWndlKb7A9Lm', 'Rqg32K5QxdrYZ8V07Y'];
+
+      const radioButtons = document.querySelectorAll('input[type="radio"][name="template-option"]');
+
+      let selectedTemplateNames = defaultTemplateNames; // Set the default value
+
+      radioButtons.forEach((radioButton) => {
+        radioButton.addEventListener('change', () => {
+          if (radioButton.value === 'long-button') {
+            selectedTemplateNames = longButtonTemplateNames;
+          } else {
+            selectedTemplateNames = defaultTemplateNames;
+          }
+        });
+      });
+      
+      const form = document.getElementById('myForm');
+      const result = document.getElementById('result');
+      const processing = document.getElementById('processing');
+      const complete = document.getElementById('complete');
+      const error = document.getElementById('error');
+      const outputtable = document.getElementById('outputtable');
+      const downloadAllButton = document.getElementById('downloadwrapper');
+      
+      const csvToJson = (csv) => {
+        const parseResult = Papa.parse(csv, {
+          header: true,
+          skipEmptyLines: true,
+        });
+
+        if (parseResult.errors.length > 0) {
+          console.error('CSV parsing errors:', parseResult.errors);
+          throw new Error('Error parsing CSV file');
+        }
+
+        return parseResult.data;
+      };
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const fileInfo = []; // Declare fileInfo array here
+        const uploadFileOption = document.getElementById("upload-multiple");
+
+        if (uploadFileOption.checked) {
+        
+          const { template } = event.target.elements;
+          const file = event.target.elements['json-file'].files[0];
+          
+          const reader = new FileReader();
+          reader.readAsText(file);
+
+          processing.style.display = 'block';
+          processing.innerHTML = "Generating images...";
+          outputtable.style.display = 'block';
+
+          const image_urls = [];
+
+          reader.onload = async () => {
+            const data = csvToJson(reader.result);
+
+            const finalTemplateNames = [];
+
+            try {
+            for (const row_data of data) {
+              const maxArrayLength = Math.min(dimensions.length, selectedTemplateNames.length);
+              for (let i = 0; i < maxArrayLength; i++) {
+                const dimension = dimensions[i];
+                const templateName = selectedTemplateNames[i];
+
+                const { headline, subhead, template, filename, templatename, btntext, btncolor, imagenumber, bgcolor1, bgcolor2 } = row_data;
+                const imagenumberValue = imagenumber;
+                const filenameValue = filename;
+
+                fileInfo.push({ 
+                  filename: row_data.filename,
+                  templateName,
+                  dimension
+                });
+
+
+                  const response = await fetch('/.netlify/functions/image-create', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      headline,
+                      subhead,
+                      filename: filenameValue,
+                      btntext,
+                      btncolor,
+                      imagenumber: imagenumberValue,
+                      bgcolor1,
+                      bgcolor2,
+                      template: templateName,
+                      templatename: dimension
+                    }),
+                  });
+
+                  const { image_url } = await response.json();
+                  image_urls.push(image_url);
+
+                  const imageBlob = await fetch(image_url).then(response => response.blob());
+                  const fileName = row_data.filename + '_' + templateName + '_' + dimension + '.png';
+                  // const fileName = `${row_data.filename}_${templatename}_${dimension}.png`;
+                  const fileUrl = URL.createObjectURL(imageBlob);
+                  const row = result.insertRow();
+                  const cell1 = row.insertCell();
+                  const cell2 = row.insertCell();
+                  const cell3 = row.insertCell();
+                  cell1.innerHTML = row_data.filename;
+                  cell2.innerHTML = dimension;
+                  cell3.innerHTML = `<a href="${fileUrl}" download="${fileName}" name="${row_data.filename}">Download image</a>`;
+                  processing.innerHTML = "Images are being generated, please don't refresh ...";
+                }
+              }
+
+              downloadAllButton.style.display = 'block';
+              downloadAllButton.innerHTML = "Download ALL Images";
+              downloadAllButton.addEventListener('click', async () => {
+                const zip = new JSZip();
+                for (let i = 0; i < image_urls.length; i++) {
+                  const imageBlob = await fetch(image_urls[i]).then(response => response.blob());
+                  const { filename, templateName, dimension } = fileInfo[i]; // Use fileInfo array to get the values
+                  const fileName = filename + '_' + dimension + '.png';
+                  zip.file(fileName, imageBlob);
+                }
+                const content = await zip.generateAsync({ type: "blob" });
+                saveAs(content, "generated-images.zip");
+              });
+              
+              processing.style.display = 'none';
+              complete.style.display = 'block';
+              complete.innerHTML = "All images generated";
+
+
+            } catch (error) {
+              console.error(error);
+              error.innerHTML = 'An error occurred.';
+            }
+          };
+
+        } else {
+
+          const { headline, subhead, template, filename, templatename, btntext, btncolor, imagenumber, bgcolor1, bgcolor2 } = event.target.elements;
+
+          processing.style.display = 'block';
+          processing.innerHTML = "Generating images...";
+          outputtable.style.display = 'block';
+
+          const image_urls = [];
+
+          try {
+            const response = await fetch('/.netlify/functions/image-create', {
+              method: 'POST',
+              body: JSON.stringify({
+                headline: headline.value,
+                subhead: subhead.value,
+                template: template.value,
+                filename: filename.value,
+                templatename: templatename.value,
+                btntext: btntext.value,
+                btncolor: btncolor.value,
+                imagenumber: imagenumber.value,
+                bgcolor1: bgcolor1.value,
+                bgcolor2: bgcolor2.value,
+              }),
+            });
+
+            const { image_url } = await response.json();
+            image_urls.push(image_url);
+
+            const imageBlob = await fetch(image_url).then(response => response.blob());
+            const fileName = `${filename.value}_${templatename.value}.png`;
+            const fileUrl = URL.createObjectURL(imageBlob);
+            const row = result.insertRow();
+            const cell1 = row.insertCell();
+            const cell2 = row.insertCell();
+            const cell3 = row.insertCell();
+            cell1.innerHTML = filename.value;
+            cell2.innerHTML = templatename.value;
+            cell3.innerHTML = `<a href="${fileUrl}" download="${fileName}" name="${filename.value}">Download image</a>`;
+            processing.innerHTML = "Images are being generated, please don't refresh ...";
+
+            processing.style.display = 'none';
+            complete.style.display = 'block';
+            complete.innerHTML = "All images generated";
+
+          } catch (error) {
+            console.error(error);
+            processing.innerHTML = 'An error occurred.';
+          }
+
+        }
+        
+      });
+
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
